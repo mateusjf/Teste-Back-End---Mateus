@@ -1,0 +1,17 @@
+{
+  "name": "Teste-Back-End---Mateus",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/mateusjf/Teste-Back-End---Mateus.git",
+  "author": "Mateus <mateusjf_melo@hotmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.21.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.18"
+  }
+}
