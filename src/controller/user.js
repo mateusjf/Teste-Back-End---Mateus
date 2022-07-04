@@ -1,4 +1,3 @@
-const database = require('../database/db.js')
 const User = require('../models/user.js')
 
 module.exports = {

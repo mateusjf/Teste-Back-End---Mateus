@@ -1,5 +1,17 @@
-const database = require('../database/db.js')
 const Product = require('../models/product.js')
+const Image = require('../models/image.js')
+
+
+asyncSaveDatabase = (newImage) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const result = await Image.create(newImage)
+            resolve(result)
+        } catch (error) {
+            throw error
+        }
+    })
+}
 
 module.exports = {
     async findAll(req, res) {
@@ -34,7 +46,7 @@ module.exports = {
             }
 
             res.status(404).json({
-                message: 'Object not found!',
+                message: 'Não foi possível encontrar o produto com esse id',
                 status: 404,
                 product: []
             })
@@ -61,6 +73,18 @@ module.exports = {
                     status: 201
                 }
 
+                const images = req.files.map(image => {
+                    const newImage = {
+                        filename: image.filename,
+                        path: image.path,
+                        product_id: product.id
+                    }
+
+                    return asyncSaveDatabase(newImage)
+                })
+
+                await Promise.all(images)
+
                 return res.status(201).json(response)
             }
 
@@ -70,17 +94,73 @@ module.exports = {
             })
         } catch (error) {
             return res.status(500).json({
-                error: error,
+                error: error.message,
                 status: 500
             })
         }
     },
 
-    async update() {
+    async update(req, res) {
+        try {
+            const product = await Product.findByPk(req.body.id)
+            if (product) {
+                const keys = Object.keys(req.body)
+                keys.forEach(columnName => {
+                    if (columnName !== 'id') {
+                        console.log(product[columnName])
+                        product[columnName] = req.body[columnName]
+                    }
+                })
+                product.updatedAt = new Date()
 
+                const result = await product.save()
+
+                const response = {
+                    message: 'Produto atualizado!',
+                    product: result,
+                    status: 201
+                }
+
+                res.status(201).json(response)
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar o produto com esse id',
+                status: 404,
+                product: []
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     },
 
-    async delete() {
+    async delete(req, res) {
+        try {
+            const product = await Product.findByPk(req.body.id)
+            if (product) {
+                await collaborator.destroy()
 
+                return res.status(201).json({
+                    message: 'Produto deletado!',
+                    status: 201,
+                })
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar o produto com esse id',
+                status: 404,
+                product: []
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     }
 }

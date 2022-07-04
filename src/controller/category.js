@@ -1,5 +1,3 @@
-const req = require('express/lib/request')
-const database = require('../database/db.js')
 const Category = require('../models/category.js')
 
 module.exports = {

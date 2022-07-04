@@ -3,6 +3,7 @@ const { DataTypes } = require('sequelize')
 
 const User = require('./user')
 const Category = require('./category')
+const Image = require('./image')
 
 const Product = sequelize.define('Product', {
     id: {
@@ -34,6 +35,11 @@ User.hasMany(Product, {
 Category.hasMany(Product, {
     constraints: true,
     foreignKey: 'category_id'
+})
+
+Product.hasMany(Image, {
+    constraints: true,
+    foreignKey: 'product_id'
 })
 
 module.exports = Product
