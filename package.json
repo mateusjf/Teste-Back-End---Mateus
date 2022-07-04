@@ -11,6 +11,9 @@
     "mysql2": "^2.3.3",
     "sequelize": "^6.21.2"
   },
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
   "devDependencies": {
     "nodemon": "^2.0.18"
   }
