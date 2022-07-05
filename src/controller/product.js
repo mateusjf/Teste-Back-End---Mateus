@@ -73,18 +73,19 @@ module.exports = {
                     status: 201
                 }
 
-                const images = req.files.map(image => {
-                    const newImage = {
-                        filename: image.filename,
-                        path: image.path,
-                        product_id: product.id
-                    }
+                if (req.files) {
+                    const images = req.files.map(image => {
+                        const newImage = {
+                            filename: image.filename,
+                            path: image.path,
+                            product_id: product.id
+                        }
 
-                    return asyncSaveDatabase(newImage)
-                })
+                        return asyncSaveDatabase(newImage)
+                    })
 
-                await Promise.all(images)
-
+                    await Promise.all(images)
+                }
                 return res.status(201).json(response)
             }
 

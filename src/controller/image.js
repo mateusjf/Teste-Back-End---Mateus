@@ -43,7 +43,7 @@ module.exports = {
             res.status(404).json({
                 message: 'Object not found!',
                 status: 404,
-                category: []
+                image: []
             })
 
         } catch (error) {
@@ -56,11 +56,19 @@ module.exports = {
 
     async create(req, res) {
         try {
-            const [image, created] = await Image.findOrCreate({
-                where: { filename: req.body.filename },
-                defaults: req.body
-            });
+            const newImage = {
+                filename: req.file.filename,
+                path: req.file.path,
+                product_id: req.body.product_id
+            }
 
+            
+            const [image, created] = await Image.findOrCreate({
+                where: { filename: newImage.filename },
+                defaults: newImage
+            });
+            
+            
             if (created) {
                 const response = {
                     message: 'Imagem cadastrada!',
@@ -83,11 +91,65 @@ module.exports = {
         }
     },
 
-    async update() {
-        
+    async update(req, res) {
+        try {
+            const image = await Image.findByPk(req.body.id)
+            if (image) {
+                const keys = Object.keys(req.body)
+                keys.forEach(columnName => {
+                    if (columnName !== 'id') {
+                        image[columnName] = req.body[columnName]
+                    }
+                })
+                image.updatedAt = new Date()
+
+                const result = await image.save()
+
+                const response = {
+                    message: 'Imagem atualizada!',
+                    image: result,
+                    status: 201
+                }
+
+                res.status(201).json(response)
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar uma imagem com esse nome',
+                status: 404,
+                imagem: []
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     },
 
-    async delete() {
+    async delete(req, res) {
+        try {
+            const image = await Image.findByPk(req.body.id)
+            if (image) {
+                await image.destroy()
 
+                return res.status(201).json({
+                    message: 'Image deletada!',
+                    status: 201,
+                })
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar uma imagem com esse id',
+                status: 404,
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     }
 }

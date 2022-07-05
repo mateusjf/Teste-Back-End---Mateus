@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use('/uploads', express.static(__dirname + '/uploads'))
+
 const userRouter = require('./src/routes/user.js')
 const categoryRouter = require('./src/routes/category.js')
 const productRouter = require('./src/routes/product.js')
