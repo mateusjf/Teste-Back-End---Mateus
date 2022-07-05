@@ -33,7 +33,7 @@ module.exports = {
             }
 
             res.status(404).json({
-                message: 'Object not found!',
+                message: 'Usuário não encontrado',
                 status: 404,
                 user: []
             })
@@ -76,11 +76,65 @@ module.exports = {
         }
     },
 
-    async update() {
+    async update(req, res) {
+        try {
+            const user = await User.findByPk(req.body.id)
+            if (user) {
+                const keys = Object.keys(req.body)
+                keys.forEach(columnName => {
+                    if (columnName !== 'id') {
+                        user[columnName] = req.body[columnName]
+                    }
+                })
+                user.updatedAt = new Date()
 
+                const result = await user.save()
+
+                const response = {
+                    message: 'Usuário atualizado!',
+                    user: result,
+                    status: 201
+                }
+
+                res.status(201).json(response)
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar o produto com esse id',
+                status: 404,
+                user: []
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     },
 
-    async delete() {
+    async delete(req, res) {
+        try {
+            const user = await User.findByPk(req.body.id)
+            if (user) {
+                await User.destroy()
 
+                return res.status(201).json({
+                    message: 'Usuário deletado!',
+                    status: 201,
+                })
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar um usuário com esse id',
+                status: 404,
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     }
 }

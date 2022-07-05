@@ -33,7 +33,7 @@ module.exports = {
             }
 
             res.status(404).json({
-                message: 'Object not found!',
+                message: 'Categoria não encontrada!',
                 status: 404,
                 category: []
             })
@@ -49,7 +49,7 @@ module.exports = {
     async create(req, res) {
         try {
             const [category, created] = await Category.findOrCreate({
-                where: { name: req.body.name},
+                where: { name: req.body.name },
                 defaults: req.body
             });
 
@@ -75,11 +75,65 @@ module.exports = {
         }
     },
 
-    async update() {
+    async update(req, res) {
+        try {
+            const category = await Category.findByPk(req.body.id)
+            if (category) {
+                const keys = Object.keys(req.body)
+                keys.forEach(columnName => {
+                    if (columnName !== 'id') {
+                        category[columnName] = req.body[columnName]
+                    }
+                })
+                category.updatedAt = new Date()
 
+                const result = await category.save()
+
+                const response = {
+                    message: 'Categoria atualizada!',
+                    category: result,
+                    status: 201
+                }
+
+                res.status(201).json(response)
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar uma categoria com esse id',
+                status: 404,
+                category: []
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     },
 
-    async delete() {
+    async delete(req, res) {
+        try {
+            const category = await Category.findByPk(req.body.id)
+            if (category) {
+                await category.destroy()
 
+                return res.status(201).json({
+                    message: 'Produto deletado!',
+                    status: 201,
+                })
+            }
+
+            res.status(404).json({
+                message: 'Não foi possível encontrar uma categoria com esse id',
+                status: 404,
+            })
+
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
     }
 }

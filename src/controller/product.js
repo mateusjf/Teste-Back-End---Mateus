@@ -107,7 +107,6 @@ module.exports = {
                 const keys = Object.keys(req.body)
                 keys.forEach(columnName => {
                     if (columnName !== 'id') {
-                        console.log(product[columnName])
                         product[columnName] = req.body[columnName]
                     }
                 })
@@ -125,7 +124,7 @@ module.exports = {
             }
 
             res.status(404).json({
-                message: 'Não foi possível encontrar o produto com esse id',
+                message: 'Não foi possível encontrar um produto com esse id',
                 status: 404,
                 product: []
             })
@@ -142,7 +141,7 @@ module.exports = {
         try {
             const product = await Product.findByPk(req.body.id)
             if (product) {
-                await collaborator.destroy()
+                await product.destroy()
 
                 return res.status(201).json({
                     message: 'Produto deletado!',
@@ -151,9 +150,8 @@ module.exports = {
             }
 
             res.status(404).json({
-                message: 'Não foi possível encontrar o produto com esse id',
+                message: 'Não foi possível encontrar um produto com esse id',
                 status: 404,
-                product: []
             })
 
         } catch (error) {
