@@ -3,8 +3,8 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('Images', [{
-      filename: 'goblin.jpg',
-      path: 'uploads/goblin.jpg',
+      filename: 'img-exemplo.jpeg',
+      path: 'uploads/img-exemplo.jpeg',
       product_id: 1,
       createdAt: new Date(),
       updatedAt: new Date()

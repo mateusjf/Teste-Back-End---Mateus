@@ -62,13 +62,13 @@ module.exports = {
                 product_id: req.body.product_id
             }
 
-            
+
             const [image, created] = await Image.findOrCreate({
                 where: { filename: newImage.filename },
                 defaults: newImage
             });
-            
-            
+
+
             if (created) {
                 const response = {
                     message: 'Imagem cadastrada!',
@@ -93,7 +93,12 @@ module.exports = {
 
     async update(req, res) {
         try {
-            const image = await Image.findByPk(req.body.id)
+            const { filename } = req.params
+            const image = await Image.findOne({
+                where: {
+                    filename
+                }
+            })
             if (image) {
                 const keys = Object.keys(req.body)
                 keys.forEach(columnName => {
@@ -130,7 +135,12 @@ module.exports = {
 
     async delete(req, res) {
         try {
-            const image = await Image.findByPk(req.body.id)
+            const { filename } = req.params
+            const image = await Image.findOne({
+                where: {
+                    filename
+                }
+            })
             if (image) {
                 await image.destroy()
 

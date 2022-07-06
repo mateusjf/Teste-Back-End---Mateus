@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 module.exports = {
     generateToken: (dataObject) => {
-        return jwt.sign(dataObject, 'secretkey', {
+        return jwt.sign(dataObject, process.env.SECRET_JWT, {
             expiresIn: (60 * 60)
         })
     },
@@ -24,7 +25,7 @@ module.exports = {
 
         const callback = param => {
             return new Promise((resolve, reject) => {
-                jwt.verify(token, 'secretkey', (err, decoded) => {
+                jwt.verify(token, process.env.SECRET_JWT, (err, decoded) => {
                     if (err) {
                         reject(err)
                     }
