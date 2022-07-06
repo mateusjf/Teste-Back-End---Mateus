@@ -1,4 +1,6 @@
 const User = require('../models/user.js')
+const bcrypt = require('bcrypt')
+const { generateToken } = require('../utils/jwtToken')
 
 module.exports = {
     async findAll(req, res) {
@@ -48,6 +50,9 @@ module.exports = {
 
     async create(req, res) {
         try {
+            const hashedPassword = await bcrypt.hash(req.body.password, 10)
+            req.body.password = hashedPassword
+            
             const [user, created] = await User.findOrCreate({
                 where: { email: req.body.email },
                 defaults: req.body
@@ -130,6 +135,42 @@ module.exports = {
                 status: 404,
             })
 
+        } catch (error) {
+            return res.status(500).json({
+                error: error.message,
+                status: 500
+            })
+        }
+    },
+
+    async authentication(req, res) {
+        try {
+            const user = await User.findOne({
+                where: {
+                    email: req.body.email
+                }
+            })
+
+            if (user) {
+                const compareResult = await bcrypt.compare(req.body.password, user.password)
+                if (compareResult) {
+                    const token = generateToken({
+                        id: user.id,
+                        name: user.name
+                    })
+
+                    return res.status(201).json({
+                        message: 'Usuário autenticado!',
+                        token,
+                        status: 201
+                    })
+                }
+            }
+
+            res.status(401).json({
+                message: 'Falha na autenticação',
+                status: 401
+            })
         } catch (error) {
             return res.status(500).json({
                 error: error.message,

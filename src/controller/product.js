@@ -61,6 +61,8 @@ module.exports = {
 
     async create(req, res) {
         try {
+            req.body.user_id = req.user.id
+
             const [product, created] = await Product.findOrCreate({
                 where: { name: req.body.name },
                 defaults: req.body

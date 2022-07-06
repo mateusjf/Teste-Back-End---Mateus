@@ -13,4 +13,6 @@ router.put('/user', controller.update)
 
 router.delete('/user', controller.delete)
 
+router.post('/user/authentication', controller.authentication)
+
 module.exports = router

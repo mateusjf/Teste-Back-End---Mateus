@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer')
+const { autorization, decodeToken } = require('../utils/jwtToken')
 
 const controller = require('../controller/product.js')
 
@@ -25,10 +26,10 @@ router.get('/product', controller.findAll)
 
 router.get('/product/:id', controller.findOne)
 
-router.post('/product', upload.array('images', 5), controller.create)
+router.post('/product', autorization ,upload.array('images', 5), controller.create)
 
-router.put('/product', controller.update)
+router.put('/product', autorization, controller.update)
 
-router.delete('/product', controller.delete)
+router.delete('/product', autorization, controller.delete)
 
 module.exports = router

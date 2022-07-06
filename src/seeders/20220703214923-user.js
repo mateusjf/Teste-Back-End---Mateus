@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 'use strict';
 
 module.exports = {
@@ -5,7 +6,7 @@ module.exports = {
     await queryInterface.bulkInsert('Users', [{
       name: 'John Doe',
       email: 'john@mail.com',
-      password: 'senhaFraca',
+      password: await bcrypt.hash('senhaFraca', 10),
       createdAt: new Date(),
       updatedAt: new Date(),
      }], {});

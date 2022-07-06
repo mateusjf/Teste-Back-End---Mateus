@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const multer = require('multer')
+const { autorization } = require('../utils/jwtToken')
 
 const controller = require('../controller/image.js')
 
@@ -21,18 +22,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({storage})
 
-//TODAS AS IMAGENS DO PRODUTO
 router.get('/images/product/:product_id', controller.findAll)
 
-//UMA IMAGEM ESPECIFICA DE ACORDO COM A URL
 router.get('/images/product/uploads/:filename', controller.findOne)
 
-router.post('/images/product', upload.single('images'), controller.create)
+router.post('/images/product', upload.single('images'), autorization, controller.create)
 
-//UMa imagem especifica de acordo com a url
-router.put('/images/product/uploads/:filename', controller.update)
+router.put('/images/product/uploads/:filename', autorization, controller.update)
 
-//UMa imagem especifica de acordo com a url
-router.delete('/images/product/uploads/:filename', controller.delete)
+router.delete('/images/product/uploads/:filename', autorization, controller.delete)
 
 module.exports = router
